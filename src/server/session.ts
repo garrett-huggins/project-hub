@@ -1,6 +1,7 @@
 import { JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { encrypt, decrypt } from "./jwt";
+import { redirect } from "next/navigation";
 
 export interface Session {
   user: {
@@ -112,4 +113,12 @@ export async function getSession() {
     return;
   }
   return await decrypt(session);
+}
+
+export async function getAuthSession() {
+  const session = await getSession();
+  if (!session) {
+    redirect("/api/auth");
+  }
+  return session;
 }

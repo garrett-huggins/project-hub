@@ -3,7 +3,7 @@ import { getSession } from "@/server/session";
 export default async function Home() {
   const session = await getSession();
   return (
-    <main className="container mx-auto">
+    <main className="container mx-auto px-2">
       <h1 className="text-center text-h1">Project Hub</h1>
       {session ? (
         <p className="text-center text-lg">
