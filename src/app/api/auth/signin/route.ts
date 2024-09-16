@@ -20,7 +20,6 @@ export async function POST(req: NextRequest) {
   const github_url = new URL("https://github.com/login/oauth/authorize");
   github_url.searchParams.set("client_id", process.env.GITHUB_CLIENT_ID!);
   github_url.searchParams.set("state", state);
-  console.log("github_url", github_url.toString());
   return NextResponse.redirect(github_url.toString(), {
     status: 302, // Explicitly set status to 302 for GET oauth redirect since NextResponse.redirect defaults to 307
   });

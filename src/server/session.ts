@@ -2,6 +2,7 @@ import { JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { encrypt, decrypt } from "./jwt";
 import { redirect } from "next/navigation";
+import { db } from "./db";
 
 export interface Session {
   user: {
@@ -31,7 +32,7 @@ export async function createSession(
   payload: CallbackPayload | GithubAuthError,
 ) {
   if ("error" in payload) {
-    console.log("error", payload);
+    console.error("Error", payload);
     return;
   }
 
@@ -42,7 +43,6 @@ export async function createSession(
     },
   });
   const data = await res.json();
-  console.log("profile", data);
   const user = {
     id: data.id,
     username: data.login,
@@ -59,6 +59,19 @@ export async function createSession(
   cookies().set("session", session, {
     httpOnly: true,
   });
+  // Create user if none exists
+  const dbUser = await db.user.findFirst({
+    where: {
+      id: user.id,
+    },
+  });
+  if (!dbUser) {
+    await db.user.create({
+      data: {
+        id: user.id,
+      },
+    });
+  }
 }
 
 /**
@@ -69,7 +82,6 @@ export async function createSession(
  * @throws Error
  */
 export async function updateSession(payload: JWTPayload) {
-  console.log("refresh payload", payload);
   if (!payload.refresh_token) {
     return;
   }
@@ -88,7 +100,6 @@ export async function updateSession(payload: JWTPayload) {
     }),
   });
   const data = await res.json();
-  console.log("refresh data", data);
   if (data.error) {
     throw new Error("Refresh Token Error: ", data.error_description);
   }
@@ -102,7 +113,6 @@ export async function updateSession(payload: JWTPayload) {
     access_token: data.access_token,
     refresh_token: data.refresh_token,
   };
-  console.log("refresh session", session);
 
   return await encrypt(session, data.expires_in);
 }
