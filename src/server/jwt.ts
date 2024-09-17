@@ -6,12 +6,13 @@ const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(
   payload: Session,
-  expires_in: number
+  expires_in: number,
 ): Promise<string> {
+  console.log("expires in", expires_in);
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime(expires_in + "s") // Set dynamic expiration time based on GitHub token expiration
+    .setExpirationTime(10 + "s") // Set dynamic expiration time based on GitHub token expiration
     .sign(key);
 }
 

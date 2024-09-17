@@ -12,9 +12,12 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch (error) {
       const payload = (error as JWTExpired).payload;
+      console.log("Session expired", payload);
       if (payload.refresh_token) {
         try {
+          console.log("Refreshing session");
           const refreshSession = await updateSession(payload);
+          console.log("Session refreshed", refreshSession);
           const res = NextResponse.next();
           if (refreshSession) {
             res.cookies.set("session", refreshSession, {
@@ -23,11 +26,13 @@ export async function middleware(request: NextRequest) {
           }
           return res;
         } catch (error) {
+          console.error("Error refreshing session", error);
           const res = NextResponse.next();
           res.cookies.delete("session");
           return res;
         }
       } else {
+        console.log("No refresh token found");
         const res = NextResponse.next();
         res.cookies.delete("session");
         return res;
