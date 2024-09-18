@@ -6,8 +6,9 @@ import { db } from "./db";
 
 export interface Session {
   user: {
-    id: string;
+    id: number;
     username: string;
+    name?: string;
     image: string;
   };
   access_token: string;
@@ -46,6 +47,7 @@ export async function createSession(
   const user = {
     id: data.id,
     username: data.login,
+    name: data.name,
     image: data.avatar_url,
   };
   const session = await encrypt(
@@ -103,7 +105,7 @@ export async function updateSession(payload: JWTPayload) {
   if (data.error) {
     throw new Error("Refresh Token Error: ", data.error_description);
   }
-  const user = payload.user as { id: string; username: string; image: string };
+  const user = payload.user as { id: number; username: string; image: string };
   const session: Session = {
     user: {
       id: user.id,

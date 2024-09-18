@@ -1,8 +1,9 @@
 import { createGitHubClient } from "@/server/utils";
 
 export async function getRepos() {
-  const { github } = await createGitHubClient();
-  const { data } = await github.repos.listForAuthenticatedUser({
+  const { github, session } = await createGitHubClient();
+  const { data } = await github.repos.listForUser({
+    username: session.user.username,
     per_page: 5,
   });
 
