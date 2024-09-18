@@ -1,7 +1,6 @@
 import { getAuthSession } from "@/server/session";
 // import { Repos } from "./repos";
 import { PublishedProjects } from "./published-repos";
-import { Button } from "@/components/ui/button";
 
 export default async function Profile() {
   const session = await getAuthSession();
