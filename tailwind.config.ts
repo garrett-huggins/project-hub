@@ -20,6 +20,10 @@ const config: Config = {
         p: "1rem",
         sub: "0.833rem",
       },
+      screens: {
+        xs: "375px",
+      },
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
