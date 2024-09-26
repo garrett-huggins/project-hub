@@ -11,10 +11,9 @@ export async function middleware(request: NextRequest) {
       await decrypt(session.value);
       return NextResponse.next();
     } catch (error) {
-      const payload = (error as JWTExpired).payload;
-      if (payload.refresh_token) {
+      if (error instanceof JWTExpired && error.payload.refresh_token) {
         try {
-          const refreshSession = await updateSession(payload);
+          const refreshSession = await updateSession(error.payload);
           const res = NextResponse.next();
           if (refreshSession) {
             res.cookies.set("session", refreshSession, {

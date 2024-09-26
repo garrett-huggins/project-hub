@@ -6,7 +6,7 @@ const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(
   payload: Session,
-  expires_in: number
+  expires_in: number,
 ): Promise<string> {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
